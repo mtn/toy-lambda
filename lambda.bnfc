@@ -1,0 +1,10 @@
+entrypoints NmTerm;
+
+NmTmVar.      NmTerm5 ::= Ident;
+NmTmInt.      NmTerm5 ::= Integer;
+NmTmApp.      NmTerm4 ::= NmTerm4 NmTerm3;
+NmTmLet.      NmTerm3 ::= "let" Ident "=" NmTerm "in" NmTerm;
+NmTmAbs.      NmTerm2 ::= "\\" Ident "->" NmTerm;
+NmTmAdd.      NmTerm  ::= NmTerm "+" NmTerm;
+
+coercions   NmTerm 4;
