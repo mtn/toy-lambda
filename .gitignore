@@ -1,0 +1,13 @@
+PrintLambda.*
+ParLambda.*
+SkelLambda.*
+LexLambda.*
+AbsLambda.*
+ErrM.*
+TestLambda.*
+
+.stack-work/
+
+*.o
+*.hi
+
