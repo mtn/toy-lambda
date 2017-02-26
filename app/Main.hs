@@ -68,7 +68,6 @@ main = runInputT defaultSettings loop
                Just input -> do
                   let tx = myLLexer input in case pNmTerm tx of
                      Ok  tree -> do outputStrLn "\nParse Successful!"
-                                    outputStrLn . show $ rmNames [] tree
-                                    -- putStrV 0 $ "\n[Linearized tree]\n\n" ++ printTree tree
+                                    outputStrLn . prettyTerm . eval . rmNames [] $ tree
            loop
 
