@@ -16,13 +16,14 @@ data Term
   deriving (Eq, Ord, Show, Read)
 
 rmNames :: Context -> NmTerm -> Term
-rmNames c (NmTmVar (Ident str))    = case (elemIndex (str,NameBind) c) of
-                                        Just a  -> TmVar str $ fromIntegral a
-                                        Nothing -> error "Undefined"
-rmNames _ (NmTmInt n)              = TmInt $ (fromIntegral n)
-rmNames c (NmTmApp tm1 tm2)        = TmApp (rmNames c tm1) (rmNames c tm2)
-rmNames c (NmTmAbs (Ident str) tm) = let c' = (str,NameBind):c in TmAbs (Ident str) $ rmNames c' tm
-rmNames c (NmTmAdd tm1 tm2)        = TmAdd (rmNames c tm1) (rmNames c tm2)
+rmNames c (NmTmVar (Ident str))         = case (elemIndex (str,NameBind) c) of
+                                             Just a  -> TmVar str $ fromIntegral a
+                                             Nothing -> error "Undefined"
+rmNames _ (NmTmInt n)                   = TmInt $ (fromIntegral n)
+rmNames c (NmTmApp tm1 tm2)             = TmApp (rmNames c tm1) (rmNames c tm2)
+rmNames c (NmTmAbs (Ident str) tm)      = let c' = (str,NameBind):c in TmAbs (Ident str) $ rmNames c' tm
+rmNames c (NmTmAdd tm1 tm2)             = TmAdd (rmNames c tm1) (rmNames c tm2)
+rmNames c (NmTmLet (Ident str) tm1 tm2) = let c'= (str,NameBind):c in TmLet (Ident str) (rmNames c' tm2) (rmNames c' tm1)
 
 prettyTerm :: Term -> String
 prettyTerm (TmVar str n)          = "x@" ++ show n
@@ -65,6 +66,7 @@ evalStep c (TmAdd tm1 tm2)               | isVal tm1 = Step $ tm1 `TmAdd` eval t
 evalStep c (TmApp (TmAbs id tm1) tm2)    | isVal tm2 = Step $ subst tm2 tm1
                                          | otherwise = Step $ TmApp tm1 (extractRes $ evalStep c tm2)
 evalStep c (TmApp tm1 tm2)               = Step $ TmApp (extractRes $ evalStep c tm1) tm2
+-- evalStep c (TmLet (TmAbs id tm1) tm2)    = Tm
 evalStep _ a                             = NoRuleApplies
 
 extractRes :: Result -> Term
